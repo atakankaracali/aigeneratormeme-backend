@@ -26,7 +26,7 @@ app.post("/generate-meme-text", async (req, res) => {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "openai/gpt-3.5-turbo",
+        model: "deepseek/deepseek-v3-base",
         messages: [
           {
             role: "user",
