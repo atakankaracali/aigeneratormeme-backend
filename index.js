@@ -15,18 +15,23 @@ app.post("/generate-meme-text", async (req, res) => {
   let prompt = "";
 
   if (mode === "roast") {
-    prompt = `Roast me. Make it brutally funny in 1-2 lines.`;
-  } else if (mode === "hr") {
-    prompt = `You're an AI comedian for corporate satire. Create a darkly funny meme based on this HR profile:\nMood: ${feeling}, Problem: ${problem}, Last Enjoyed: ${lastEnjoyed}.`;
+    prompt = `Roast me in a brutally funny and short meme caption. Max 2 lines.`;
+  } else if (mode === "manifest") {
+    prompt = `Create exactly ONE (1) motivational meme caption (max 2 lines) for someone who:
+- Dreams of: ${feeling}
+- Feels blocked by: ${problem}
+- Would feel: ${lastEnjoyed} if it came true.
+
+Do NOT give multiple alternatives. Return only ONE meme text. Make it short, modern, and in meme style.`;
   } else {
-    prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Give me a funny meme text.`;
+    prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Create a short and funny meme caption (max 2 lines).`;
   }
 
   try {
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "deepseek/deepseek-v3-base",
+        model: "mistralai/mistral-small-3.1-24b-instruct:free",
         messages: [
           {
             role: "user",
@@ -37,15 +42,19 @@ app.post("/generate-meme-text", async (req, res) => {
       {
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
       }
-    );    
+    );
 
-    res.json({ memeText: response.data.choices[0].message.content });
+    const memeText = response.data.choices?.[0]?.message?.content?.trim();
+
+    if (!memeText) throw new Error("AI response missing or invalid");
+
+    res.json({ memeText });
   } catch (error) {
-    console.error("❌ Backend AI Error:", error);
-    res.status(500).json({ error: "AI failed to generate a response." });
+    console.error("❌ Backend AI Error:", error.response?.data || error.message);
+    res.status(500).json({ error: "AI failed to generate a meme." });
   }
 });
 
