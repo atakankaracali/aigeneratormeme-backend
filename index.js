@@ -126,15 +126,17 @@ DO NOT give multiple alternatives. Return ONLY ONE meme text.`;
     }
 
     try {
-        const response = await axios.post(
+          const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "mistralai/mistral-small-3.1-24b-instruct:free",
+                model: "openchat/openchat-3.5-7b:free",
                 messages: [{ role: "user", content: prompt }],
             },
             {
                 headers: {
                     Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                    "HTTP-Referer": "https://www.aigeneratememe.com",
+                    "X-Title": "AI Meme Generator",
                     "Content-Type": "application/json",
                 },
             }
