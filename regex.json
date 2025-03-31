@@ -1,0 +1,11 @@
+[
+    "(?i)forget\\s+(about|everything|the\\s+above)",
+    "(?i)ignore\\s+(the\\s+previous|all\\s+above|everything)",
+    "(?i)as\\s+an\\s+ai",
+    "(?i)act\\s+as",
+    "(?i)pretend\\s+to",
+    "(?i)jailbroken",
+    "(?i)developer\\s+mode",
+    "(?i)simulate",
+    "(?i)role\\s*:"
+]
