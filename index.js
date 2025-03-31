@@ -48,7 +48,7 @@ const forbiddenWords = process.env.FORBIDDEN_WORDS
     ? process.env.FORBIDDEN_WORDS.split(",").map(w => w.trim().toLowerCase())
     : [];
 
-const forbiddenPatterns = JSON.parse(fs.readFileSync("./regex.json", "utf8")).map(p => new RegExp(p));
+const forbiddenPatterns = JSON.parse(fs.readFileSync("./regex.json", "utf8")).map(p => new RegExp(p, "i"));
 
 const SIGNATURE_SECRET = process.env.SIGNATURE_SECRET || null;
 
