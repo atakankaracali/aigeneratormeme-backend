@@ -92,11 +92,15 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `Roast me with ONLY ONE (1) brutally funny and short meme caption. DO NOT give multiple alternatives. Max 2 lines.`;
+        prompt = `Roast me with ONLY ONE (1) brutally funny, sarcastic, internet-style meme caption. Make it feel like it came from a savage friend who loves dark humor. Keep it short (max 2 lines) and make sure it's unexpected. DO NOT give multiple alternatives.`;
     } else if (mode === "manifest") {
-        prompt = `Create ONLY ONE (1) motivational meme caption (max 2 lines) for someone who:\n- Dreams of: ${feeling}\n- Feels blocked by: ${problem}\n- Would feel: ${lastEnjoyed} if it came true.\n\nDO NOT give multiple alternatives. Return ONLY ONE meme text.`;
+        prompt = `Create ONLY ONE (1) motivational meme caption (max 2 lines) for someone who:
+    - Dreams of: ${feeling}
+    - Feels blocked by: ${problem}
+    - Would feel: ${lastEnjoyed} if it came true.
+    Think like a successful entrepreneur giving advice on Twitter. Make it punchy, honest, modern, and meme-worthy. DO NOT give multiple alternatives.`;
     } else if (mode === "classic") {
-        prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Create ONLY ONE short and funny meme caption (max 2 lines). DO NOT give multiple alternatives.`;
+        prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Create ONLY ONE short, modern, and funny meme caption (max 2 lines). Style it like an internet meme you would see on Reddit or Instagram. Avoid cliches. DO NOT give multiple alternatives.`;
     } else {
         return res.status(400).json({ error: "Invalid mode." });
     }
