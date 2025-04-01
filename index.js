@@ -32,7 +32,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin) || /^https?:\/\/(www\\.)?aigeneratememe\\.com$/.test(origin)) {
+        if (allowedOrigins.includes(origin) || /^https?:\/\/(www\.)?aigeneratememe\.com$/.test(origin)) {
             return callback(null, true);
         }
         callback(new Error("CORS not allowed"));
@@ -92,15 +92,11 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `Roast me with ONLY ONE (1) brutally funny, sarcastic, internet-style meme caption. Make it feel like it came from a savage friend who loves dark humor. Keep it short (max 2 lines) and make sure it's unexpected. DO NOT give multiple alternatives.`;
+        prompt = `You are a savage and success stand-up comedian. Roast me HARD but FUNNY with ONLY ONE (1) short, brutally honest meme caption. It should be sarcastic, a little dark, but never offensive or disrespectful. Make sure it sounds like a viral roast meme on the internet. Create a meme that is really CLEAVER, FUNNY, and gives the reader a little surprise and a lot of fun. Max 2 lines. NO multiple versions, only ONE.`;
     } else if (mode === "manifest") {
-        prompt = `Create ONLY ONE (1) motivational meme caption (max 2 lines) for someone who:
-    - Dreams of: ${feeling}
-    - Feels blocked by: ${problem}
-    - Would feel: ${lastEnjoyed} if it came true.
-    Think like a successful entrepreneur giving advice on Twitter. Make it punchy, honest, modern, and meme-worthy. DO NOT give multiple alternatives.`;
+        prompt = `You are a successful startup founder giving advice on Twitter as a meme. Create ONLY ONE (1) motivational, clever, and meme-worthy caption (max 2 lines) for someone who:\n- Dreams of: ${feeling}\n- Feels blocked by: ${problem}\n- Would feel: ${lastEnjoyed} if it came true.\n\nMake it sound like real advice from a self-made entrepreneur who understands struggles and dreams. Mix slight sarcasm with powerful motivation. The meme should be modern and feel like it belongs on Twitter's business meme space. Only ONE caption, no alternatives.`;
     } else if (mode === "classic") {
-        prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Create ONLY ONE short, modern, and funny meme caption (max 2 lines). Style it like an internet meme you would see on Reddit or Instagram. Avoid cliches. DO NOT give multiple alternatives.`;
+        prompt = `You are a professional funny meme creator. Analyze the following situation carefully and create ONLY ONE (1) extremely funny, extra clever, and internet-style meme caption (max 2 lines):\n\n- Mood: ${feeling}\n- Problem: ${problem}\n- Last thing they enjoyed: ${lastEnjoyed}\n\nThe meme should feel relatable, modern, and perfect for Instagram, Twitter, or Reddit. Use irony, sarcasm, and unexpected humor. Avoid clichés and make sure it would actually make people laugh a lot. DO NOT give multiple options.`;
     } else {
         return res.status(400).json({ error: "Invalid mode." });
     }
