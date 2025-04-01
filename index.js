@@ -99,7 +99,7 @@ app.post("/generate-meme-text", async (req, res) => {
     
     ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
     } else if (mode === "classic") {
-        prompt = `You are a professional viral meme creator. Based on the user's situation below, create ONLY ONE (1) internet-style meme caption (max 2 lines):
+        prompt = `You are a professional viral meme creator. Based on the user's situation below, create ONLY ONE (1) internet-style CREATIVE and FUNNY meme caption (max 2 lines):
     - Mood: ${safeFeeling}
     - Problem: ${safeProblem}
     - Last thing enjoyed: ${safeLastEnjoyed}
