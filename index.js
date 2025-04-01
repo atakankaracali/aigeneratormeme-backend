@@ -28,7 +28,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin) || /^https?:\/\/(www\.)?aigeneratememe\.com$/.test(origin)) {
+        if (allowedOrigins.includes(origin) || /^https?:\/\/(www\\.)?aigeneratememe\\.com$/.test(origin)) {
             return callback(null, true);
         }
         callback(new Error("CORS not allowed"));
@@ -48,16 +48,10 @@ const forbiddenWords = process.env.FORBIDDEN_WORDS
     ? process.env.FORBIDDEN_WORDS.split(",").map(w => w.trim().toLowerCase())
     : [];
 
-const forbiddenPatterns = JSON.parse(fs.readFileSync("./regex.json", "utf8")).map(p => new RegExp(p, "i"));
-
-const SIGNATURE_SECRET = process.env.SIGNATURE_SECRET || null;
-
 function hasInjection(text) {
     if (!text) return false;
     const lowerText = text.toLowerCase();
-    if (forbiddenWords.some(word => lowerText.includes(word))) return true;
-    if (forbiddenPatterns.some(pattern => pattern.test(text))) return true;
-    return false;
+    return forbiddenWords.some(word => lowerText.includes(word));
 }
 
 function isTooLong(text, max = 100) {
@@ -75,21 +69,6 @@ app.post("/generate-meme-text", async (req, res) => {
     const { feeling, problem, lastEnjoyed, mode } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "unknown";
 
-    const ua = req.headers['user-agent'] || "";
-    if (!ua || ua.length < 10) {
-        logToFile(ip, { alert: "Suspicious User-Agent detected", ua });
-        return res.status(403).json({ error: "Suspicious client detected." });
-    }
-
-    if (SIGNATURE_SECRET) {
-        if (req.headers['x-api-signature'] !== SIGNATURE_SECRET) {
-            logToFile(ip, { alert: "Invalid Signature", ua });
-            return res.status(403).json({ error: "Invalid signature." });
-        }
-    }
-
-    logToFile(ip, { mode, feeling, problem, lastEnjoyed });
-
     if (!mode) {
         return res.status(400).json({ error: "Missing mode parameter" });
     }
@@ -99,12 +78,10 @@ app.post("/generate-meme-text", async (req, res) => {
     }
 
     if ([feeling, problem, lastEnjoyed].some(str => isTooLong(str))) {
-        logToFile(ip, { warning: "Input too long detected" });
         return res.status(400).json({ error: "Input too long" });
     }
 
     if ([feeling, problem, lastEnjoyed, mode].some(field => hasInjection(field))) {
-        logToFile(ip, { alert: "Prompt injection attempt detected" });
         return res.status(400).json({ error: "Potential prompt injection detected" });
     }
 
@@ -113,12 +90,7 @@ app.post("/generate-meme-text", async (req, res) => {
     if (mode === "roast") {
         prompt = `Roast me with ONLY ONE (1) brutally funny and short meme caption. DO NOT give multiple alternatives. Max 2 lines.`;
     } else if (mode === "manifest") {
-        prompt = `Create ONLY ONE (1) motivational meme caption (max 2 lines) for someone who:
-- Dreams of: ${feeling}
-- Feels blocked by: ${problem}
-- Would feel: ${lastEnjoyed} if it came true.
-
-DO NOT give multiple alternatives. Return ONLY ONE meme text.`;
+        prompt = `Create ONLY ONE (1) motivational meme caption (max 2 lines) for someone who:\n- Dreams of: ${feeling}\n- Feels blocked by: ${problem}\n- Would feel: ${lastEnjoyed} if it came true.\n\nDO NOT give multiple alternatives. Return ONLY ONE meme text.`;
     } else if (mode === "classic") {
         prompt = `Today's mood: ${feeling}. Biggest problem: ${problem}. Last enjoyed: ${lastEnjoyed}. Create ONLY ONE short and funny meme caption (max 2 lines). DO NOT give multiple alternatives.`;
     } else {
@@ -126,7 +98,7 @@ DO NOT give multiple alternatives. Return ONLY ONE meme text.`;
     }
 
     try {
-          const response = await axios.post(
+        const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
                 model: "openchat/openchat-3.5-7b:free",
@@ -135,8 +107,6 @@ DO NOT give multiple alternatives. Return ONLY ONE meme text.`;
             {
                 headers: {
                     Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-                    "HTTP-Referer": "https://www.aigeneratememe.com",
-                    "X-Title": "AI Meme Generator",
                     "Content-Type": "application/json",
                 },
             }
