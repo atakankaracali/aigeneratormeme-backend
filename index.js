@@ -73,8 +73,9 @@ app.post("/generate-meme-text", async (req, res) => {
     const { feeling, problem, lastEnjoyed, mode } = req.body;
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "unknown";
 
-    if (!mode) {
-        return res.status(400).json({ error: "Missing mode parameter" });
+    const allowedModes = ["classic", "roast", "manifest"];
+    if (!allowedModes.includes(mode)) {
+        return res.status(400).json({ error: "Invalid mode." });
     }
 
     if (mode !== "roast" && (!feeling || !problem || !lastEnjoyed)) {
@@ -97,9 +98,7 @@ app.post("/generate-meme-text", async (req, res) => {
         prompt = `You are a successful entrepreneur known for viral Twitter memes. Create ONLY ONE (1) motivational meme caption (max 2 lines) based on:\n- Dream: ${feeling}\n- Blocker: ${problem}\n- Reward: ${lastEnjoyed}\n\nThe meme should feel like honest advice with a twist of humor, sarcasm, and inspiration. Imagine it going viral on LinkedIn or Twitter. NO multiple options. Just ONE punchy caption.`;
     } else if (mode === "classic") {
         prompt = `You are an expert in viral internet memes. Based on the following info, create ONLY ONE (1) extremely CREATIVE, UNEXPECTED, and FUNNY meme caption (max 2 lines):\n\n- Mood: ${feeling}\n- Problem: ${problem}\n- Last thing enjoyed: ${lastEnjoyed}\n\nDo NOT just repeat these words. Instead, transform them into a hilarious meme concept. Use irony, exaggeration, memespeak, relatable internet situations, and surprise the reader. Avoid clichés. Make sure it sounds like a meme you’d see on Reddit, Twitter, or Instagram. Only ONE version.`;
-    } else {
-        return res.status(400).json({ error: "Invalid mode." });
-    }    
+    }
 
     try {
         const response = await axios.post(
