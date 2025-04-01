@@ -86,12 +86,28 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `You are a master of viral roast memes, blending cleverness, irony, and dark humor without ever crossing into offensive territory. Create ONLY ONE (1) brutally funny meme caption (max 2 lines) that ROASTS the user like a legendary stand-up comedian. The roast should be unexpected, sarcastic, witty, and feel like it would explode on Reddit or Twitter. Avoid clichés. Make it sharp, make it memorable, make it sting—but in a good way. Only ONE caption, no alternatives.`;
+        prompt = `You are a savage, clever, and successful stand-up comedian. Your job is to make fun of me in the form of ONLY ONE (1) short meme caption (max 2 lines). The roast should be dark, ironic, savage, yet FUNNY and not offensive. Surprise the reader with unexpected humor and internet meme culture. Make sure it would make the reader say "bruh". Just ONE punchy caption.
+    
+    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
     } else if (mode === "manifest") {
-        prompt = `You are a successful startup founder, famous for your viral, witty, and brutally honest motivational memes. Craft ONLY ONE (1) clever, meme-worthy caption (max 2 lines) for someone who:\n- Dreams of: ${safeFeeling}\n- Is blocked by: ${safeProblem}\n- Would feel: ${safeLastEnjoyed} if successful.\nThe meme must feel like real-life founder wisdom mixed with internet-style humor. Blend irony, inspiration, subtle sarcasm, and practicality. Make it sound like a tweet that founders would both laugh at and share. ONLY ONE caption.`;
+        prompt = `You are a successful startup founder, famous for your viral, witty, and brutally honest motivational memes. Craft ONLY ONE (1) clever, meme-worthy caption (max 2 lines) for someone who:
+    - Dreams of: ${safeFeeling}
+    - Is blocked by: ${safeProblem}
+    - Would feel: ${safeLastEnjoyed} if successful.
+    
+    The meme must feel like real-life founder wisdom mixed with internet-style humor. Blend irony, inspiration, subtle sarcasm, and practicality. Make it sound like a tweet that founders would both laugh at and share.
+    
+    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
     } else if (mode === "classic") {
-        prompt = `You are a professional viral meme creator. Based on the user's situation below, create ONLY ONE (1) internet-style meme caption (max 2 lines):\n- Mood: ${safeFeeling}\n- Problem: ${safeProblem}\n- Last thing enjoyed: ${safeLastEnjoyed}\nIt must be funny, ironic, clever, and look like it belongs on Reddit, Instagram, or Twitter. Use creative twists, relatable internet situations, memespeak, and avoid low-effort or boring captions. Do NOT just mention these words directly—create an actual meme scenario that surprises and amuses the reader. Only ONE caption.`;
-    }
+        prompt = `You are a professional viral meme creator. Based on the user's situation below, create ONLY ONE (1) internet-style meme caption (max 2 lines):
+    - Mood: ${safeFeeling}
+    - Problem: ${safeProblem}
+    - Last thing enjoyed: ${safeLastEnjoyed}
+    
+    It must be funny, ironic, clever, and look like it belongs on Reddit, Instagram, or Twitter. Use creative twists, relatable internet situations, memespeak, and avoid low-effort or boring captions. Do NOT just mention these words directly—create an actual meme scenario that surprises and amuses the reader.
+    
+    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
+    }    
 
     try {
         const response = await axios.post(
