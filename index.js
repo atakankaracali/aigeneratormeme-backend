@@ -105,7 +105,7 @@ app.post("/generate-meme-text", async (req, res) => {
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "openchat/openchat-3.5-7b:free",
+                model: "openchat/openchat-7b:free",
                 messages: [{ role: "user", content: prompt }],
             },
             {
