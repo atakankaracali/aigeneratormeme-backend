@@ -11,6 +11,10 @@ dotenv.config();
 
 const app = express();
 
+if (!fs.existsSync("logs")) {
+    fs.mkdirSync("logs");
+}
+
 app.use(helmet());
 app.use(express.json());
 
