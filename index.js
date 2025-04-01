@@ -6,6 +6,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import fs from "fs";
 import path from "path";
+import { sanitizeInput, hasAdvancedInjection, isTooLong } from "./utils/secureInput.js";
 
 dotenv.config();
 
@@ -48,20 +49,6 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-const forbiddenWords = process.env.FORBIDDEN_WORDS
-    ? process.env.FORBIDDEN_WORDS.split(",").map(w => w.trim().toLowerCase())
-    : [];
-
-function hasInjection(text) {
-    if (!text) return false;
-    const lowerText = text.toLowerCase();
-    return forbiddenWords.some(word => lowerText.includes(word));
-}
-
-function isTooLong(text, max = 100) {
-    return text.length > max;
-}
-
 function logToFile(ip, data) {
     const date = new Date().toISOString().split('T')[0];
     const logLine = `[${new Date().toISOString()}] [${ip}] ${JSON.stringify(data)}\n`;
@@ -86,18 +73,22 @@ app.post("/generate-meme-text", async (req, res) => {
         return res.status(400).json({ error: "Input too long" });
     }
 
-    if ([feeling, problem, lastEnjoyed, mode].some(field => hasInjection(field))) {
+    if ([feeling, problem, lastEnjoyed, mode].some(field => hasAdvancedInjection(field))) {
         return res.status(400).json({ error: "Potential prompt injection detected" });
     }
+
+    const safeFeeling = sanitizeInput(feeling);
+    const safeProblem = sanitizeInput(problem);
+    const safeLastEnjoyed = sanitizeInput(lastEnjoyed);
 
     let prompt = "";
 
     if (mode === "roast") {
         prompt = `You are a savage, clever, and successful stand-up comedian. Your job is to make fun of me in the form of ONLY ONE (1) short meme caption (max 2 lines). The roast should be dark, ironic, savage, yet FUNNY and not offensive. Surprise the reader with unexpected humor and internet meme culture. Make sure it would make the reader say "bruh". Just ONE punchy caption.`;
     } else if (mode === "manifest") {
-        prompt = `You are a successful entrepreneur known for viral Twitter memes. Create ONLY ONE (1) motivational meme caption (max 2 lines) based on:\n- Dream: ${feeling}\n- Blocker: ${problem}\n- Reward: ${lastEnjoyed}\n\nThe meme should feel like honest advice with a twist of humor, sarcasm, and inspiration. Imagine it going viral on LinkedIn or Twitter. NO multiple options. Just ONE punchy caption.`;
+        prompt = `You are a successful entrepreneur known for viral Twitter memes. Create ONLY ONE (1) motivational meme caption (max 2 lines) based on:\n- Dream: ${safeFeeling}\n- Blocker: ${safeProblem}\n- Reward: ${safeLastEnjoyed}\n\nThe meme should feel like honest advice with a twist of humor, sarcasm, and inspiration. Imagine it going viral on LinkedIn or Twitter. NO multiple options. Just ONE punchy caption.`;
     } else if (mode === "classic") {
-        prompt = `You are an expert in viral internet memes. Based on the following info, create ONLY ONE (1) extremely CREATIVE, UNEXPECTED, and FUNNY meme caption (max 2 lines):\n\n- Mood: ${feeling}\n- Problem: ${problem}\n- Last thing enjoyed: ${lastEnjoyed}\n\nDo NOT just repeat these words. Instead, transform them into a hilarious meme concept. Use irony, exaggeration, memespeak, relatable internet situations, and surprise the reader. Avoid clichés. Make sure it sounds like a meme you’d see on Reddit, Twitter, or Instagram. Only ONE version.`;
+        prompt = `You are an expert in viral internet memes. Based on the following info, create ONLY ONE (1) extremely CREATIVE, UNEXPECTED, and FUNNY meme caption (max 2 lines):\n\n- Mood: ${safeFeeling}\n- Problem: ${safeProblem}\n- Last thing enjoyed: ${safeLastEnjoyed}\n\nDo NOT just repeat these words. Instead, transform them into a hilarious meme concept. Use irony, exaggeration, memespeak, relatable internet situations, and surprise the reader. Avoid clichés. Make sure it sounds like a meme you would see on Reddit, Twitter, or Instagram. Only ONE version.`;
     }
 
     try {
