@@ -86,29 +86,44 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `You are a savage, clever, and successful stand-up comedian. Your job is to make fun of me in the form of ONLY ONE (1) short meme caption (max 2 lines). The roast should be dark, ironic, savage, yet FUNNY and not offensive. Surprise the reader with unexpected humor and internet meme culture. Make sure it would make the reader say "bruh". Just ONE punchy caption.
+        prompt = `You are a savage, clever, and successful stand-up comedian. Your job is to roast me with ONLY ONE (1) short meme caption (max 2 lines). The roast must be dark, ironic, savage, and FUNNY — but never offensive. Surprise the reader with unexpected humor and internet meme culture.
     
-    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
+    ⚠️ Very Important Rules:
+    - Only use standard Latin alphabet (A-Z, a-z) and common English punctuation.
+    - Do NOT include emojis, special symbols, or any non-English characters (e.g., Chinese, Japanese, Cyrillic, etc.).
+    - NO emojis, NO foreign languages, NO weird unicode — or your output gets deleted.
+    
+    Output Format: A clean, sharp, and punchy English sentence — meme-style, maximum 2 lines.`;
     } else if (mode === "manifest") {
-        prompt = `You are a successful startup founder, famous for your viral, witty, and brutally honest motivational memes. Craft ONLY ONE (1) clever, meme-worthy caption (max 2 lines) for someone who:
+        prompt = `You are a successful startup founder, known for viral, brutally honest motivational memes. Write ONLY ONE (1) meme-worthy caption (max 2 lines) for someone who:
     - Dreams of: ${safeFeeling}
     - Is blocked by: ${safeProblem}
-    - Would feel: ${safeLastEnjoyed} if successful.
+    - Would feel: ${safeLastEnjoyed} if they succeed.
     
-    The meme must feel like real-life founder wisdom mixed with internet-style humor. Blend irony, inspiration, subtle sarcasm, and practicality. Make it sound like a tweet that founders would both laugh at and share.
+    Make the caption feel like real-life founder wisdom blended with internet humor. Add a touch of irony, inspiration, and practicality.
     
-    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
+    ⚠️ Very Important Rules:
+    - Text must be in English and use only standard Latin alphabet characters.
+    - Do NOT use emojis, non-English scripts, symbols, or fancy characters.
+    - This will be displayed on a professional meme platform — weird outputs will be rejected.
+    
+    Output Format: 1 clean English caption. Max 2 lines. No formatting.`;
     } else if (mode === "classic") {
-        prompt = `You are a professional viral meme creator. Based on the user's situation below, create ONLY ONE (1) internet-style CREATIVE and FUNNY meme caption (max 2 lines):
+        prompt = `You are a professional meme creator. Based on the user's situation, write ONLY ONE (1) funny and original meme caption (max 2 lines):
     - Mood: ${safeFeeling}
     - Problem: ${safeProblem}
     - Last thing enjoyed: ${safeLastEnjoyed}
     
-    It must be funny, ironic, clever, and look like it belongs on Reddit, Instagram, or Twitter. Use creative twists, relatable internet situations, memespeak, and avoid low-effort or boring captions. Do NOT just mention these words directly—create an actual meme scenario that surprises and amuses the reader.
+    The caption must feel like something you'd see on Reddit or Twitter — relatable, ironic, clever, and surprising. Use real internet humor. Don't just copy the input — create a new, witty scenario based on it.
     
-    ⚠️ Important: This is a pure text-only task. DO NOT use any non-latin, special, or random characters. Do not include emojis, symbols, or non-english words. Only plain, clean, and understandable english sentences.`;
-    }    
-
+    ⚠️ STRICT RULES:
+    - Use ONLY English with standard Latin characters (A-Z).
+    - No foreign scripts, no emojis, no weird symbols, no formatting tricks.
+    - Keep it clean, readable, and hilarious.
+    
+    Output: One single meme caption. Max 2 lines. Pure English only.`;
+    }
+    
     try {
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
