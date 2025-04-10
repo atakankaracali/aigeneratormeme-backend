@@ -86,35 +86,45 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `You are a savage, clever, and successful stand-up comedian. Roast me with ONLY ONE meme caption (max 2 lines). Be ironic, dark, and witty — but never offensive. Make it feel like something brutally hilarious on Reddit or Twitter.
+        prompt = `You are a clever, dark-humored internet comedian. Write ONE short and savage roast-style meme caption (max 2 lines) that feels like it belongs on Reddit or Twitter. It should be:
+- Unexpectedly funny
+- Smart and ironic
+- Never offensive, racist, sexist, or political
+- Just enough edge to make people laugh, not cringe
 
 Rules:
-- Use ONLY plain English (A-Z).
-- NO emojis, NO foreign words, NO symbols.
-- Output must look clean and human-readable.
-- Only return ONE caption. No intro, no explanation.`;
+- Only use plain English (A-Z), no emojis or symbols.
+- No intros, explanations, or formatting.
+- Make it feel like a punchline that ends a roast battle.`;
     } else if (mode === "manifest") {
-        prompt = `You are a legendary startup founder, known for crafting viral motivational meme captions that blend real-life pain with inspiring hustle culture. Write ONE sharp and powerful caption (max 2 lines) for someone who:
-
+        prompt = `You're a startup founder known for creating meme-style motivational quotes that are equal parts hilarious and real. Write ONE caption (max 2 lines) for a hustler who:
 - Dreams of: ${safeFeeling}
 - Is blocked by: ${safeProblem}
-- Would feel: ${safeLastEnjoyed} if they succeed.
+- Would feel: ${safeLastEnjoyed} if they succeed
+
+Style:
+- Blend startup pain with hopeful sarcasm
+- Use dry humor, internet wisdom, and surprise
+- No toxic hustle, just relatable honesty
 
 Rules:
-- Use ONLY English letters (A-Z).
-- No emojis, foreign characters, or weird symbols.
-- No explanation. Just one clear, clever caption.`;
+- English only (A-Z), no emojis or symbols
+- Output just the meme caption. No extra content.`;
     } else if (mode === "classic") {
-        prompt = `You are a viral meme master. Based on the mood, problem, and last joy below, write ONE clever, internet-style meme caption (max 2 lines). It should be witty, relatable, and punchy — as if it came from Instagram, Twitter, or Reddit.
-
+        prompt = `You're a master of meme culture. Based on the user's vibe, write ONE short and funny meme caption (max 2 lines) using:
 - Mood: ${safeFeeling}
 - Problem: ${safeProblem}
 - Last thing enjoyed: ${safeLastEnjoyed}
 
+Style:
+- Make it relatable
+- Add an unexpected twist
+- Think Twitter, Tumblr, Reddit humor (clever, ironic, subtle chaos)
+
 Rules:
-- Use plain English only (A-Z), no other alphabets.
-- NO emojis, symbols, or foreign words.
-- Output only the caption. Keep it short, human, and memeable.`;
+- English (A-Z only), no emojis or formatting
+- No edgy/offensive content
+- Just return one witty caption.`;
     }
 
     try {
