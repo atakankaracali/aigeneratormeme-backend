@@ -86,56 +86,56 @@ app.post("/generate-meme-text", async (req, res) => {
     let prompt = "";
 
     if (mode === "roast") {
-        prompt = `You are a savage, clever, and successful stand-up comedian. Your job is to roast me with ONLY ONE (1) short meme caption (max 2 lines). The roast must be dark, ironic, savage, and FUNNY — but never offensive. Surprise the reader with unexpected humor and internet meme culture.
-    
-    ⚠️ Very Important Rules:
-    - Only use standard Latin alphabet (A-Z, a-z) and common English punctuation.
-    - Do NOT include emojis, special symbols, or any non-English characters (e.g., Chinese, Japanese, Cyrillic, etc.).
-    - NO emojis, NO foreign languages, NO weird unicode — or your output gets deleted.
-    
-    Output Format: A clean, sharp, and punchy English sentence — meme-style, maximum 2 lines.`;
+        prompt = `You are a savage, clever, and successful stand-up comedian. Roast me with ONLY ONE meme caption (max 2 lines). Be ironic, dark, and witty — but never offensive. Make it feel like something brutally hilarious on Reddit or Twitter.
+
+Rules:
+- Use ONLY plain English (A-Z).
+- NO emojis, NO foreign words, NO symbols.
+- Output must look clean and human-readable.
+- Only return ONE caption. No intro, no explanation.`;
     } else if (mode === "manifest") {
-        prompt = `You are a successful startup founder, known for viral, brutally honest motivational memes. Write ONLY ONE (1) meme-worthy caption (max 2 lines) for someone who:
-    - Dreams of: ${safeFeeling}
-    - Is blocked by: ${safeProblem}
-    - Would feel: ${safeLastEnjoyed} if they succeed.
-    
-    Make the caption feel like real-life founder wisdom blended with internet humor. Add a touch of irony, inspiration, and practicality.
-    
-    ⚠️ Very Important Rules:
-    - Text must be in English and use only standard Latin alphabet characters.
-    - Do NOT use emojis, non-English scripts, symbols, or fancy characters.
-    - This will be displayed on a professional meme platform — weird outputs will be rejected.
-    
-    Output Format: 1 clean English caption. Max 2 lines. No formatting.`;
+        prompt = `You are a legendary startup founder, known for crafting viral motivational meme captions that blend real-life pain with inspiring hustle culture. Write ONE sharp and powerful caption (max 2 lines) for someone who:
+
+- Dreams of: ${safeFeeling}
+- Is blocked by: ${safeProblem}
+- Would feel: ${safeLastEnjoyed} if they succeed.
+
+Rules:
+- Use ONLY English letters (A-Z).
+- No emojis, foreign characters, or weird symbols.
+- No explanation. Just one clear, clever caption.`;
     } else if (mode === "classic") {
-        prompt = `You are a professional meme creator. Based on the user's situation, write ONLY ONE (1) funny and original meme caption (max 2 lines):
-    - Mood: ${safeFeeling}
-    - Problem: ${safeProblem}
-    - Last thing enjoyed: ${safeLastEnjoyed}
-    
-    The caption must feel like something you'd see on Reddit or Twitter — relatable, ironic, clever, and surprising. Use real internet humor. Don't just copy the input — create a new, witty scenario based on it.
-    
-    ⚠️ STRICT RULES:
-    - Use ONLY English with standard Latin characters (A-Z).
-    - No foreign scripts, no emojis, no weird symbols, no formatting tricks.
-    - Keep it clean, readable, and hilarious.
-    
-    Output: One single meme caption. Max 2 lines. Pure English only.`;
+        prompt = `You are a viral meme master. Based on the mood, problem, and last joy below, write ONE clever, internet-style meme caption (max 2 lines). It should be witty, relatable, and punchy — as if it came from Instagram, Twitter, or Reddit.
+
+- Mood: ${safeFeeling}
+- Problem: ${safeProblem}
+- Last thing enjoyed: ${safeLastEnjoyed}
+
+Rules:
+- Use plain English only (A-Z), no other alphabets.
+- NO emojis, symbols, or foreign words.
+- Output only the caption. Keep it short, human, and memeable.`;
     }
-    
+
     try {
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "bytedance-research/ui-tars-72b:free",
-                messages: [{ role: "user", content: prompt }],
+                model: "meta-llama/llama-4-scout:free",
+                messages: [
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ]
             },
             {
                 headers: {
                     Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     "Content-Type": "application/json",
-                },
+                    "HTTP-Referer": "https://www.aigeneratememe.com",
+                    "X-Title": "AI Generate Meme"
+                }
             }
         );
 
