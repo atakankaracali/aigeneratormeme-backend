@@ -3,7 +3,8 @@ import { getFirestore } from "firebase-admin/firestore";
 
 const base64 = process.env.FIREBASE_ADMIN_KEY_BASE64;
 console.log("🧪 BASE64 EXISTS?", !!base64);
-console.log("🧪 BASE64 LENGTH:", base64?.length || "undefined");
+console.log("🧪 BASE64 LENGTH:", base64?.length);
+console.log("🧪 DECODED PREVIEW:", decoded?.substring?.(0, 100));
 
 try {
   const decoded = Buffer.from(base64, "base64").toString("utf-8");
