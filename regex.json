@@ -1,0 +1,16 @@
+[
+    "forget\\s+(about|everything|the\\s+above|all)",
+    "ignore\\s+(the\\s+previous|all\\s+above|everything|all)",
+    "as\\s+an\\s+ai",
+    "act\\s+as",
+    "pretend\\s+to",
+    "jailbroken",
+    "developer\\s+mode",
+    "simulate",
+    "role\\s*:",
+    "system\\s*:",
+    "bypass\\s+filter",
+    "disregard\\s+previous",
+    "you\\s+are\\s+an\\s+ai",
+    "overwrite\\s+instructions"
+]
