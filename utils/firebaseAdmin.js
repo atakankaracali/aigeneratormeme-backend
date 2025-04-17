@@ -7,10 +7,18 @@ console.log("🧪 BASE64 LENGTH:", base64?.length || "undefined");
 
 try {
   const decoded = Buffer.from(base64, "base64").toString("utf-8");
+  console.log("🧪 DECODED PREVIEW:", decoded.slice(0, 50));
   const serviceAccount = JSON.parse(decoded);
   console.log("✅ Parsed service account OK");
+
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert(serviceAccount),
+    });
+  }
 } catch (err) {
   console.error("❌ JSON parse failed:", err.message);
 }
+
 
 export const db = getFirestore();
