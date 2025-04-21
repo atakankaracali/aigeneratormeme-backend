@@ -60,13 +60,13 @@ app.post("/generate-meme-text", async (req, res) => {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
   const ua = req.headers["user-agent"] || "unknown";
 
-  const allowedModes = ["classic", "roast", "manifest"];
+  const allowedModes = ["classic", "roast", "manifest", "surprise", "fortune"];
   if (!allowedModes.includes(mode)) {
     return res.status(400).json({ error: "Invalid mode." });
   }
 
-  if (mode !== "roast" && (!feeling || !problem || !lastEnjoyed)) {
-    return res.status(400).json({ error: "Missing parameters for non-roast mode" });
+  if (!["roast", "surprise", "fortune"].includes(mode) && (!feeling || !problem || !lastEnjoyed)) {
+    return res.status(400).json({ error: "Missing parameters for this mode" });
   }
 
   if ([feeling, problem, lastEnjoyed].some((str) => isTooLong(str))) {
@@ -153,6 +153,37 @@ Rules:
 - English (A-Z only), no emojis or formatting
 - No edgy/offensive content
 - Just return one witty caption.`;
+  } else if (mode === "surprise") {
+    prompt = `You are a chaotic creative AI who writes wild and weird meme captions. 
+  Your job is to generate ONE short and unexpected meme caption (max 2 lines) that:
+  - Makes people say “what the heck did I just read” but still smile
+  - Sounds like Gen Z humor or absurd Twitter humor
+  - Is witty, ironic, or surreal
+  - Doesn not follow meme templates, but surprises with randomness
+  
+  Rules:
+  - No offensive, political, or inappropriate content
+  - No emojis or symbols
+  - English only (A-Z)
+  - Output only the caption.`;
+
+  } else if (mode === "fortune") {
+    prompt = `You are a digital fortune cookie with meme energy.
+  Write ONE short fortune-style sentence (1 line only) that:
+  - Sounds like a daily wisdom, spiritual advice, or funny truth bomb
+  - Has a mysterious, optimistic, or cryptic tone
+  - Feels like a message from the universe or horoscope but not cheesy
+  
+  Examples:
+  - “Sometimes, doing nothing is the bravest thing.”
+  - “Today you might discover you have always been enough.”
+  - “Don't trust the quiet ones. They know too much.”
+  
+  Rules:
+  - No emojis or symbols
+  - No explanation or fluff
+  - English only (A-Z)
+  - Output one single-line caption.`;
   }
 
   try {
