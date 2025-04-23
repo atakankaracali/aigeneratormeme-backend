@@ -80,7 +80,7 @@ app.post("/generate-meme-text", async (req, res) => {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
   const ua = req.headers["user-agent"] || "unknown";
 
-  const allowedModes = ["classic", "roast", "manifest", "surprise", "fortune"];
+  const allowedModes = ["classic", "roast", "manifest", "surprise", "fortune", "flavor"];
   if (!allowedModes.includes(mode)) {
     return res.status(400).json({ error: "Invalid mode." });
   }
@@ -204,6 +204,32 @@ Rules:
   - No explanation or fluff
   - English only (A-Z)
   - Output one single-line caption.`;
+  } else if (mode === "flavor") {
+    const flavorIntros = [
+      "Today's Flavor: chaotic Tumblr wisdom",
+      "Today's Flavor: unhinged philosophical nonsense",
+      "Today's Flavor: corporate satire meets therapy",
+      "Today's Flavor: poetic Twitter with a twist",
+      "Today's Flavor: minimalist chaos",
+      "Today's Flavor: spiritual sassy truths",
+      "Today's Flavor: Gen-Z meets ancient monk",
+      "Today's Flavor: your inner voice on espresso",
+      "Today's Flavor: Pinterest board on fire",
+      "Today's Flavor: therapy, but make it viral"
+    ];
+    const flavorIntro = flavorIntros[Math.floor(Math.random() * flavorIntros.length)];
+
+    prompt = `You are a viral meme philosopher. Write ONE unique meme caption (max 2 lines) that:
+  - Embodies the style: "${flavorIntro}"
+  - Feels chaotic, poetic, unexpected, or emotionally punchy
+  - Is clever, short, and creative like Tumblr or X (Twitter)
+  - Could be printed on a sticker, shared as a tweet, or tattooed ironically
+  
+  Rules:
+  - English only (A-Z), no emojis or formatting
+  - No hashtags, no intros
+  - Just one original, bold meme sentence.
+  `;
   }
 
   try {
