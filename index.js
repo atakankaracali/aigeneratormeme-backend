@@ -85,7 +85,8 @@ app.post("/generate-meme-text", async (req, res) => {
     return res.status(400).json({ error: "Invalid mode." });
   }
 
-  if (!["roast", "surprise", "fortune"].includes(mode) && (!feeling || !problem || !lastEnjoyed)) {
+  const modesWithoutInputs = ["roast", "surprise", "fortune", "flavor"];
+  if (!modesWithoutInputs.includes(mode) && (!feeling || !problem || !lastEnjoyed)) {
     return res.status(400).json({ error: "Missing parameters for this mode" });
   }
 
