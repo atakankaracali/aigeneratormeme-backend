@@ -54,6 +54,26 @@ function logToFile(ip, data, ua = "") {
   const logPath = path.join("logs", `${date}.txt`);
   fs.appendFileSync(logPath, logLine);
 }
+app.get("/api/emoji-leaderboard", async (req, res) => {
+  try {
+    const statsRef = db.collection("emojiStats");
+    const snapshot = await statsRef.get();
+    const totals = {};
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      for (const emoji in data) {
+        if (!totals[emoji]) totals[emoji] = 0;
+        totals[emoji] += data[emoji];
+      }
+    });
+
+    res.json({ totals });
+  } catch (err) {
+    console.error("🔥 Error fetching emoji leaderboard:", err);
+    res.status(500).json({ error: "Could not fetch emoji stats" });
+  }
+});
 
 app.post("/generate-meme-text", async (req, res) => {
   const { feeling, problem, lastEnjoyed, mode } = req.body;
