@@ -54,6 +54,21 @@ function logToFile(ip, data, ua = "") {
   const logPath = path.join("logs", `${date}.txt`);
   fs.appendFileSync(logPath, logLine);
 }
+
+app.get("/api/mode-stats", async (req, res) => {
+  try {
+    const snapshot = await db.collection("memeModes").get();
+    const result = {};
+    snapshot.forEach(doc => {
+      result[doc.id] = doc.data().count || 0;
+    });
+    res.json({ modes: result });
+  } catch (error) {
+    console.error("🔥 Error fetching meme mode stats:", error);
+    res.status(500).json({ error: "Unable to get mode stats" });
+  }
+});
+
 app.get("/api/emoji-leaderboard", async (req, res) => {
   try {
     const statsRef = db.collection("emojiStats");
@@ -98,6 +113,13 @@ app.post("/generate-meme-text", async (req, res) => {
     logToFile(ip, { warning: "Injection attempt blocked", body: req.body }, ua);
     return res.status(400).json({ error: "Potential prompt injection detected" });
   }
+
+  const modeRef = db.collection("memeModes").doc(mode);
+  await db.runTransaction(async (t) => {
+    const doc = await t.get(modeRef);
+    const current = doc.exists && doc.data()?.count ? doc.data().count : 0;
+    t.set(modeRef, { count: current + 1 }, { merge: true });
+  });
 
   const safeFeeling = sanitizeInput(feeling);
   const safeProblem = sanitizeInput(problem);
