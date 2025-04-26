@@ -95,12 +95,12 @@ app.post("/generate-meme-text", async (req, res) => {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
   const ua = req.headers["user-agent"] || "unknown";
 
-  const allowedModes = ["classic", "roast", "manifest", "surprise", "fortune", "flavor"];
+  const allowedModes = ["classic", "roast", "manifest", "surprise", "fortune", "flavor", "challenge"];
   if (!allowedModes.includes(mode)) {
     return res.status(400).json({ error: "Invalid mode." });
   }
 
-  const modesWithoutInputs = ["roast", "surprise", "fortune", "flavor"];
+  const modesWithoutInputs = ["roast", "surprise", "fortune", "flavor", "challenge"];
   if (!modesWithoutInputs.includes(mode) && (!feeling || !problem || !lastEnjoyed)) {
     return res.status(400).json({ error: "Missing parameters for this mode" });
   }
@@ -202,7 +202,7 @@ Rules:
   - Makes people say “what the heck did I just read” but still smile
   - Sounds like Gen Z humor or absurd Twitter humor
   - Is witty, ironic, or surreal
-  - Doesn not follow meme templates, but surprises with randomness
+  - Does not follow meme templates, but surprises with randomness
   
   Rules:
   - No offensive, political, or inappropriate content
@@ -243,16 +243,39 @@ Rules:
     const flavorIntro = flavorIntros[Math.floor(Math.random() * flavorIntros.length)];
 
     prompt = `You are a viral meme philosopher. Write ONE unique meme caption (max 2 lines) that:
-  - Embodies the style: "${flavorIntro}"
-  - Feels chaotic, poetic, unexpected, or emotionally punchy
-  - Is clever, short, and creative like Tumblr or X (Twitter)
-  - Could be printed on a sticker, shared as a tweet, or tattooed ironically
-  
-  Rules:
-  - English only (A-Z), no emojis or formatting
-  - No hashtags, no intros
-  - Just one original, bold meme sentence.
-  `;
+- Embodies the style: "${flavorIntro}"
+- Feels chaotic, poetic, unexpected, or emotionally punchy
+- Is clever, short, and creative like Tumblr or X (Twitter)
+- Could be printed on a sticker, shared as a tweet, or tattooed ironically
+
+Rules:
+- English only (A-Z), no emojis or formatting
+- No hashtags, no intros
+- Just one original, bold meme sentence.`;
+  } else if (mode === "challenge") {
+    const challengePrompts = [
+      { title: "Survive Monday (Again)", instruction: "Write a meme about surviving terrible Mondays with dark humor." },
+      { title: "Taco-less Tuesday", instruction: "Create a meme about missing tacos on Tuesday, with dramatic humor." },
+      { title: "Midweek Crisis Club", instruction: "Craft a meme about barely surviving Wednesday with ironic desperation." },
+      { title: "Almost Weekend, Almost Alive", instruction: "Make a meme about Thursday fake hopes of the weekend." },
+      { title: "Friyay or Fry-day?", instruction: "Generate a meme about emotional burnout clashing with Friday hype." },
+      { title: "Weekend Warrior Mode", instruction: "Write a meme about taking wild decisions during the weekend." },
+      { title: "Sunday Scaries Speedrun", instruction: "Create a meme about the anxiety of Sunday night hitting too hard." },
+    ];
+    const today = new Date().getDay();
+    const todayPrompt = challengePrompts[today] || { instruction: "Write a weird meme about surviving the week." };
+
+    prompt = `You are a chaotic but wise meme creator. Your task is:
+
+- ${todayPrompt.instruction}
+
+Rules:
+- One short meme caption (max 2 lines)
+- English only (A-Z)
+- No emojis, hashtags or formatting
+- Be witty, chaotic, relatable.
+
+Output: Only the meme sentence, no extra text.`;
   }
 
   try {
