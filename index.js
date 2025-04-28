@@ -254,13 +254,13 @@ Rules:
 - Just one original, bold meme sentence.`;
   } else if (mode === "challenge") {
     const challengePrompts = [
+      { title: "Sunday Scaries Speedrun", instruction: "Create a meme about the anxiety of Sunday night hitting too hard." },
       { title: "Survive Monday (Again)", instruction: "Write a meme about surviving terrible Mondays with dark humor." },
-      { title: "Taco-less Tuesday", instruction: "Create a meme about missing tacos on Tuesday, with dramatic humor." },
+      { title: "Energy-less Tuesday", instruction: "Create a meme about missing energy on Tuesday, with dramatic humor." },
       { title: "Midweek Crisis Club", instruction: "Craft a meme about barely surviving Wednesday with ironic desperation." },
       { title: "Almost Weekend, Almost Alive", instruction: "Make a meme about Thursday fake hopes of the weekend." },
       { title: "Friyay or Fry-day?", instruction: "Generate a meme about emotional burnout clashing with Friday hype." },
       { title: "Weekend Warrior Mode", instruction: "Write a meme about taking wild decisions during the weekend." },
-      { title: "Sunday Scaries Speedrun", instruction: "Create a meme about the anxiety of Sunday night hitting too hard." },
     ];
     const today = new Date().getDay();
     const todayPrompt = challengePrompts[today] || { instruction: "Write a weird meme about surviving the week." };
